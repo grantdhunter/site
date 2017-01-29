@@ -7,7 +7,7 @@ use std::io::Read;
 #[derive(Debug)]
 pub enum ConfigError {
     Io(io::Error),
-    Decode
+    Decode,
 }
 
 impl From<io::Error> for ConfigError {
@@ -21,7 +21,7 @@ type Result<T> = result::Result<T, ConfigError>;
 #[derive(Serialize, Deserialize, RustcDecodable, Debug)]
 pub struct Config {
     server: ServerConfig,
-    db: DbConfig
+    db: DbConfig,
 }
 
 #[derive(Serialize, Deserialize,RustcDecodable, Debug)]
@@ -34,7 +34,7 @@ pub struct ServerConfig {
 pub struct DbConfig {
     url: String,
     user: String,
-    password: String
+    password: String,
 }
 
 
@@ -51,7 +51,10 @@ impl Config {
     }
 
     pub fn db_connection(&self) -> String {
-        format!("postgres://{}:{}@{}/site", self.db.user, self.db.password, self.db.url)
+        format!("postgres://{}:{}@{}/site",
+                self.db.user,
+                self.db.password,
+                self.db.url)
     }
 }
 

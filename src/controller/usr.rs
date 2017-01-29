@@ -1,15 +1,18 @@
 use iron::{Request, Response, IronResult, status};
 use iron::headers;
+use iron::Chain;
+use middleware;
 use router::Router;
 use model;
 use plugin::Pluggable;
-use model::{AppDb};
+use model::AppDb;
 use persistent::Read;
 
 fn get(req: &mut Request) -> IronResult<Response> {
     let pool = req.get::<Read<AppDb>>().unwrap();
     let conn = pool.get().unwrap();
-    let id = req.extensions.get::<Router>()
+    let id = req.extensions
+        .get::<Router>()
         .unwrap()
         .find("id")
         .and_then(|id| id.parse::<i32>().ok());
@@ -17,7 +20,7 @@ fn get(req: &mut Request) -> IronResult<Response> {
 
     let id = match id {
         Some(id) => id,
-        None => return Ok(Response::with((status::BadRequest, "Bad Request")))
+        None => return Ok(Response::with((status::BadRequest, "Bad Request"))),
     };
 
 
@@ -25,7 +28,7 @@ fn get(req: &mut Request) -> IronResult<Response> {
 
     match usr {
         Some(u) => Ok(Response::with((status::Ok, u))),
-        None => Ok(Response::with((status::NotFound, "Not Found")))
+        None => Ok(Response::with((status::NotFound, "Not Found"))),
     }
 }
 
@@ -42,13 +45,21 @@ fn post(req: &mut Request) -> IronResult<Response> {
 
     match r {
         Some(_) => Ok(Response::with(status::Ok)),
-        None => Ok(Response::with((status::Unauthorized, "Not Authorized")))
+        None => Ok(Response::with((status::Unauthorized, "Not Authorized"))),
     }
 }
 
-pub fn index() -> Router {
-    let router = router!(index: get "/" => get,
-                         query: get "/:id" => get,
-                         index: post "/" => post);
-    router
+pub fn index() -> Chain {
+    let mut get_chain = Chain::new(get);
+    get_chain.link_before(middleware::auth::AuthenticationMiddleware);
+
+    let mut query_chain = Chain::new(get);
+    query_chain.link_before(middleware::auth::AuthenticationMiddleware);
+
+    let mut chain = Chain::new(router!(index: get "/" => get_chain,
+                         query: get "/:id" => query_chain,
+                         index: post "/" => post));
+
+
+    chain
 }

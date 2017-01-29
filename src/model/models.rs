@@ -43,7 +43,7 @@ pub struct UsrSecure {
     pub id: i32,
     pub username: String,
     password: String,
-    salt: String
+    salt: String,
 }
 
 #[derive(Debug, Insertable)]
@@ -86,15 +86,18 @@ impl UsrSecure {
             .and_then(|mut u| u.pop())
     }
 
-    pub fn check_password(conn: &PgConnection, name: &str, password: &str) -> Result<(), AuthError> {
+    pub fn check_password(conn: &PgConnection,
+                          name: &str,
+                          password: &str)
+                          -> Result<(), AuthError> {
         match UsrSecure::find(conn, name) {
             Some(u) => {
                 if &u.password == &u.hash_password(password) {
-                    return Ok(())
+                    return Ok(());
                 }
                 Err(AuthError)
-            },
-            None => Err(AuthError)
+            }
+            None => Err(AuthError),
         }
     }
 
@@ -113,7 +116,7 @@ impl NewUsrSecure {
             id: id,
             username: username.to_string(),
             password: hashed_password,
-            salt: salt
+            salt: salt,
         }
     }
 }

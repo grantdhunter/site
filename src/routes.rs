@@ -1,5 +1,5 @@
 use mount::Mount;
-use iron::{Chain};
+use iron::Chain;
 use bodyparser;
 use persistent::Read;
 
@@ -21,7 +21,6 @@ pub fn router() -> Chain {
     //Before
     chain.link_before(Read::<bodyparser::MaxBodyLength>::one(MAX_BODY_LENGTH));
     chain.link_before(Read::<AppDb>::one(pool));
-    chain.link_before(middleware::auth::AuthenticationMiddleware);
     //After
     chain.link_after(middleware::not_found::NotFound404);
     chain.link_after(middleware::auth::AuthenticationMiddleware);

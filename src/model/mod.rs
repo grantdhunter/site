@@ -19,13 +19,14 @@ pub type ConnectionPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 pub struct AppDb;
 
-impl Key for AppDb {type Value = ConnectionPool;}
+impl Key for AppDb {
+    type Value = ConnectionPool;
+}
 
 #[allow(dead_code)]
 pub fn establish_connection() -> PgConnection {
     let database_url = config::get().db_connection();
-    PgConnection::establish(&database_url)
-        .expect(&format!("Error connecting to {}", database_url))
+    PgConnection::establish(&database_url).expect(&format!("Error connecting to {}", database_url))
 }
 
 pub fn create_connection_pool() -> ConnectionPool {
@@ -41,14 +42,16 @@ pub fn save_usr_secure(conn: &PgConnection, name: &str, password: &str) -> UsrSe
     let usr = NewUsr::new()
         .email(email)
         .finalize();
-    let u: Usr = diesel::insert(&usr).into(usr::table)
-        .get_result(conn).expect("Something went wrong");
+    let u: Usr = diesel::insert(&usr)
+        .into(usr::table)
+        .get_result(conn)
+        .expect("Something went wrong");
 
     let usr = NewUsrSecure::new(u.id, name, password);
 
 
-    diesel::insert(&usr).into(usr_secure::table)
+    diesel::insert(&usr)
+        .into(usr_secure::table)
         .get_result(conn)
         .expect("Something went wrong")
 }
-

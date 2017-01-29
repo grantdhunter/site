@@ -1,5 +1,5 @@
 use iron::error::IronError;
-use iron::{BeforeMiddleware, AfterMiddleware, status, Request,Response, IronResult};
+use iron::{BeforeMiddleware, AfterMiddleware, status, Request, Response, IronResult};
 use plugin::Pluggable;
 use model::AppDb;
 use persistent::Read;
@@ -21,15 +21,14 @@ impl BeforeMiddleware for AuthenticationMiddleware {
                 let n = auth.username.clone();
                 let p = auth.password.clone().unwrap_or_default();
                 (n, p)
-            },
-            None => return Err(IronError::new(AuthError, status::Unauthorized))
+            }
+            None => return Err(IronError::new(AuthError, status::Unauthorized)),
         };
         match UsrSecure::check_password(&conn, &n, &p) {
             Ok(_) => Ok(()),
-            Err(err) => Err(IronError::new(err, status::Unauthorized))
+            Err(err) => Err(IronError::new(err, status::Unauthorized)),
         }
     }
-
 }
 
 
@@ -38,7 +37,7 @@ impl AfterMiddleware for AuthenticationMiddleware {
         if err.error.downcast::<AuthError>().is_some() {
             let mut resp = Response::with((status::Unauthorized, "401 Unauthorized"));
             resp.headers.set_raw("WWW-Authenticate", vec![b"Basic".to_vec()]);
-            return Ok(resp)
+            return Ok(resp);
         }
 
         Err(err)
