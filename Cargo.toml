@@ -1,0 +1,29 @@
+[package]
+name = "site"
+version = "0.1.0"
+authors = ["Grant Hunter <gr@nt-hunter.ca>"]
+
+[dependencies]
+iron = "*"
+router = "*"
+mount = "*"
+bodyparser = "*"
+persistent = "*"
+params = "*"
+plugin = "*"
+
+rustc-serialize = "*"
+
+serde = "*"
+serde_derive = "*"
+serde_json = "*"
+
+toml = {version = "0.2.1",  features = ["serde"]}
+
+diesel = "*"
+diesel_codegen = { version = "*", features = ["postgres"] }
+r2d2 = "*"
+r2d2-diesel = "*"
+
+rust-crypto = "*"
+rand = "*"

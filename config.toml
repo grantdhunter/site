@@ -1,0 +1,8 @@
+[server]
+ip = "localhost"
+port = 8000
+
+[db]
+url = "localhost"
+user = "grant"
+password = "qwe123"
