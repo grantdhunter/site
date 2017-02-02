@@ -23,12 +23,12 @@ extern crate plugin;
 extern crate crypto;
 extern crate rand;
 
+extern crate models;
 
 
 mod config;
 mod routes;
 mod controller;
-mod model;
 mod middleware;
 
 use iron::prelude::*;

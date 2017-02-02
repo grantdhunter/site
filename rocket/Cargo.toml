@@ -1,0 +1,10 @@
+[package]
+name = "rocket"
+version = "0.1.0"
+authors = ["Grant Hunter <gr@nt-hunter.ca>"]
+
+[dependencies]
+models = {path = "../models"}
+
+rocket = "*"
+rocket_codegen = "*"

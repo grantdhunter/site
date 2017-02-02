@@ -3,10 +3,20 @@ use iron::headers;
 use iron::Chain;
 use middleware;
 use router::Router;
-use model;
+use models;
 use plugin::Pluggable;
-use model::AppDb;
 use persistent::Read;
+use routes::AppDb;
+
+use iron::modifier::Modifier;
+
+use serde_json;
+
+impl Modifier<Response> for models::models::Usr {
+    fn modify(self, res: &mut Response) {
+        let _ = serde_json::to_string(&self).map(|s| s.into_bytes().modify(res));
+    }
+}
 
 fn get(req: &mut Request) -> IronResult<Response> {
     let pool = req.get::<Read<AppDb>>().unwrap();
@@ -24,7 +34,7 @@ fn get(req: &mut Request) -> IronResult<Response> {
     };
 
 
-    let usr = model::models::Usr::find(&conn, id);
+    let usr = models::models::Usr::find(&conn, id);
 
     match usr {
         Some(u) => Ok(Response::with((status::Ok, u))),
@@ -40,7 +50,10 @@ fn post(req: &mut Request) -> IronResult<Response> {
     let r = h.map(|auth| {
         let n = &auth.username;
         let p = &auth.password.clone().unwrap();
-        model::save_usr_secure(&conn, n, p)
+        let u = models::models::NewUsr::new()
+            .email(n.clone())
+            .save(&conn);
+        models::models::NewUsrSecure::new(u.id, n, p).save(&conn)
     });
 
     match r {
@@ -56,7 +69,7 @@ pub fn index() -> Chain {
     let mut query_chain = Chain::new(get);
     query_chain.link_before(middleware::auth::AuthenticationMiddleware);
 
-    let mut chain = Chain::new(router!(index: get "/" => get_chain,
+    let chain = Chain::new(router!(index: get "/" => get_chain,
                          query: get "/:id" => query_chain,
                          index: post "/" => post));
 

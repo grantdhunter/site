@@ -1,9 +1,7 @@
+use diesel;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use super::schema::{usr_secure, usr};
-use iron::modifier::Modifier;
-use iron::Response;
-use serde_json;
 use std::error::Error;
 use std::fmt;
 use crypto::bcrypt_pbkdf;
@@ -25,7 +23,7 @@ impl Error for AuthError {
     }
 }
 
-pub fn hash_password(password: &str, salt: &str) -> String {
+fn hash_password(password: &str, salt: &str) -> String {
     let mut out = [0u8; 32];
     bcrypt_pbkdf::bcrypt_pbkdf(password.as_bytes(), salt.as_bytes(), 32, &mut out);
 
@@ -119,6 +117,13 @@ impl NewUsrSecure {
             salt: salt,
         }
     }
+
+    pub fn save(&self, conn: &PgConnection) -> UsrSecure {
+        diesel::insert(self)
+            .into(usr_secure::table)
+            .get_result(conn)
+            .expect("Something went wrong")
+    }
 }
 
 
@@ -132,27 +137,34 @@ impl NewUsr {
         }
     }
 
-    pub fn email(&mut self, email: String) -> &mut NewUsr {
+    pub fn email(&mut self, email: String) -> &mut Self {
         self.email = Some(email);
         self
     }
-    pub fn first_name(&mut self, first_name: String) -> &mut NewUsr {
+    pub fn first_name(&mut self, first_name: String) -> &mut Self {
         self.first_name = Some(first_name);
         self
     }
 
-    pub fn last_name(&mut self, last_name: String) -> &mut NewUsr {
+    pub fn last_name(&mut self, last_name: String) -> &mut Self {
         self.last_name = Some(last_name);
         self
     }
 
-    pub fn account(&mut self, id: i32) -> &mut NewUsr {
+    pub fn account(&mut self, id: i32) -> &mut Self {
         self.account_id = Some(id);
         self
     }
 
     pub fn finalize(&self) -> Self {
         NewUsr { ..self.clone() }
+    }
+
+    pub fn save(&self, conn: &PgConnection) -> Usr {
+        diesel::insert(self)
+            .into(usr::table)
+            .get_result(conn)
+            .expect("Something went wrong")
     }
 }
 
@@ -163,12 +175,5 @@ impl Usr {
             .load::<Usr>(conn)
             .ok()
             .and_then(|mut u| u.pop())
-    }
-}
-
-
-impl Modifier<Response> for Usr {
-    fn modify(self, res: &mut Response) {
-        let _ = serde_json::to_string(&self).map(|s| s.into_bytes().modify(res));
     }
 }

@@ -20,17 +20,17 @@ type Result<T> = result::Result<T, ConfigError>;
 
 #[derive(Serialize, Deserialize, RustcDecodable, Debug)]
 pub struct Config {
-    server: ServerConfig,
-    db: DbConfig,
+    pub server: ServerConfig,
+    pub db: DbConfig,
 }
 
-#[derive(Serialize, Deserialize,RustcDecodable, Debug)]
+#[derive(Serialize, Deserialize, RustcDecodable, Debug)]
 pub struct ServerConfig {
     ip: String,
     port: u16,
 }
 
-#[derive(Serialize, Deserialize,RustcDecodable, Debug)]
+#[derive(Serialize, Deserialize, RustcDecodable, Debug)]
 pub struct DbConfig {
     url: String,
     user: String,

@@ -1,8 +1,6 @@
 use iron::{Request, Response, IronResult, status};
 use iron::Chain;
-use router::Router;
 use middleware;
-use mount::Mount;
 
 
 fn get(_: &mut Request) -> IronResult<Response> {

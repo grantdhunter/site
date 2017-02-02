@@ -5,12 +5,24 @@ use persistent::Read;
 
 use controller;
 use middleware;
-use model::{create_connection_pool, AppDb};
+use models::{create_connection_pool, ConnectionPool};
+use iron::typemap::Key;
+
+use config;
+
+pub struct AppDb;
+
+impl Key for AppDb {
+    type Value = ConnectionPool;
+}
+
 
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
 
 pub fn router() -> Chain {
-    let pool = create_connection_pool();
+
+    let config = config::get();
+    let pool = create_connection_pool(&config.db_connection());
     let mut root = Mount::new();
 
     root.mount("/", controller::index::index());

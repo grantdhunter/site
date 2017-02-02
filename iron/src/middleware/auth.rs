@@ -1,14 +1,14 @@
 use iron::error::IronError;
 use iron::{BeforeMiddleware, AfterMiddleware, status, Request, Response, IronResult};
 use plugin::Pluggable;
-use model::AppDb;
+use routes::AppDb;
 use persistent::Read;
 use iron::headers;
 
 pub struct AuthenticationMiddleware;
 
-use model::models::UsrSecure;
-use model::models::AuthError;
+use models::models::UsrSecure;
+use models::models::AuthError;
 
 impl BeforeMiddleware for AuthenticationMiddleware {
     fn before(&self, req: &mut Request) -> IronResult<()> {
