@@ -12,13 +12,7 @@ extern crate router;
 extern crate mount;
 extern crate bodyparser;
 extern crate persistent;
-#[macro_use]
-extern crate diesel;
-#[macro_use]
-extern crate diesel_codegen;
 extern crate params;
-extern crate r2d2;
-extern crate r2d2_diesel;
 extern crate plugin;
 extern crate crypto;
 extern crate rand;

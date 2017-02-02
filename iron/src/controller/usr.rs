@@ -12,7 +12,10 @@ use iron::modifier::Modifier;
 
 use serde_json;
 
-impl Modifier<Response> for models::models::Usr {
+#[derive(Serialize)]
+struct IUsr(models::models::Usr);
+
+impl Modifier<Response> for IUsr {
     fn modify(self, res: &mut Response) {
         let _ = serde_json::to_string(&self).map(|s| s.into_bytes().modify(res));
     }
@@ -37,7 +40,7 @@ fn get(req: &mut Request) -> IronResult<Response> {
     let usr = models::models::Usr::find(&conn, id);
 
     match usr {
-        Some(u) => Ok(Response::with((status::Ok, u))),
+        Some(u) => Ok(Response::with((status::Ok, IUsr(u)))),
         None => Ok(Response::with((status::NotFound, "Not Found"))),
     }
 }
