@@ -14,8 +14,6 @@ extern crate crypto;
 extern crate rand;
 
 extern crate iron;
-extern crate base64;
-extern crate rocket;
 
 use diesel::pg::PgConnection;
 use diesel::Connection;

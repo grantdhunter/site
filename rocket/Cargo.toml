@@ -17,3 +17,5 @@ serde_json = "*"
 
 rustc-serialize = "*"
 toml = {version = "*"}
+
+base64 = "*"

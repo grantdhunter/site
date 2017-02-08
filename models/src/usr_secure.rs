@@ -79,24 +79,3 @@ impl UsrSecure {
         hash_password(password, &self.salt)
     }
 }
-
-
-//
-//use base64::decode;
-//use rocket::request::{self, Request, FromRequest};
-//use rocket::Outcome::Failure;
-//impl<'a, 'r> FromRequest<'a, 'r> for UsrSecure {
-//    type Error = ();
-//    fn from_request(req: &'a Request<'r>) -> request::Outcome<Self, ()> {
-//        let h = req.headers().get("Authorization").next().unwrap_or_default();
-//
-//        let r = decode(&h.to_string()).and_then(|s| s.split(':').collect());
-//
-//        match r {
-//            Ok(r) => {
-//               UsrSecure::find()
-//            }
-//            Err(err) => Failure((err))
-//        }
-//    }
-//}

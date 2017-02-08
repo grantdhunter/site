@@ -10,6 +10,7 @@ extern crate toml;
 extern crate models;
 #[macro_use]
 extern crate lazy_static;
+extern crate base64;
 
 use rocket::request::{self, Request, FromRequest};
 use rocket::outcome::Outcome::*;
@@ -19,7 +20,9 @@ use models::usr::Usr;
 use models::ConnectionPool;
 
 mod config;
+mod authentication;
 
+use authentication::Authentication;
 
 lazy_static! {
     pub static ref DB_POOL:ConnectionPool = models::create_connection_pool(&config::get()
@@ -27,7 +30,7 @@ lazy_static! {
 }
 
 #[post("/")]
-fn login(usr: Usr) -> &'static str {
+fn login(auth: Authentication) -> &'static str {
     "Login"
 }
 
