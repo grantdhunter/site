@@ -16,3 +16,10 @@ serde_json = "*"
 
 rust-crypto = "*"
 rand = "*"
+
+iron = {version = "*"}
+rocket = {version = "*"}
+base64 = "*"
+
+[features]
+default = []

@@ -7,8 +7,8 @@ use iron::headers;
 
 pub struct AuthenticationMiddleware;
 
-use models::models::UsrSecure;
-use models::models::AuthError;
+use models::usr_secure::UsrSecure;
+use models::AuthError;
 
 impl BeforeMiddleware for AuthenticationMiddleware {
     fn before(&self, req: &mut Request) -> IronResult<()> {

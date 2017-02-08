@@ -8,3 +8,12 @@ models = {path = "../models"}
 
 rocket = "*"
 rocket_codegen = "*"
+
+lazy_static = "*"
+
+serde = "*"
+serde_derive = "*"
+serde_json = "*"
+
+rustc-serialize = "*"
+toml = {version = "*"}

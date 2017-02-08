@@ -23,4 +23,4 @@ toml = {version = "*", features = ["serde"]}
 rust-crypto = "*"
 rand = "*"
 
-models = {path = "../models"}
+models = {path = "../models", features = ["iron"]}
